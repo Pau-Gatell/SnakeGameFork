@@ -31,8 +31,8 @@ public class BirdWhiteController : BirdController
                 Vector3 eggPosition = transform.position + eggOffset;
                 Transform egg = Instantiate(eggPrefab, eggPosition, Quaternion.identity);
                 CircleCollider2D collider = egg.GetComponent<CircleCollider2D>();
-                StartCoroutine(ManageEggCollision(collider));
-
+                
+                SlingshotController.instance.StartCoroutine(ManageEggCollision(collider));
                 SlingshotController.instance.SetCurrentTarget(egg);
 
                 _used = true;

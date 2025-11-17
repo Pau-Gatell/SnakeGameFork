@@ -17,6 +17,14 @@ public class GSGameplay: GameState
         {
             GameStateManager.Instance.ChangeGameState(StateType.PAUSE);
         }
+
+        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+
+        if (enemies.Length < 1)
+        {
+            Debug.Log("We have won");
+            GameStateManager.Instance.ChangeGameState(StateType.WIN);
+        }
     }
 
     public override void OnExit()

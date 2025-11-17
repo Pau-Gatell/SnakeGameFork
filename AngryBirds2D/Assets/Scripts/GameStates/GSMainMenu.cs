@@ -22,6 +22,12 @@ public class GSMainMenu : GameState
     public void PlayGame()
     {
         SceneManager.LoadScene("SampleScene");
+        SceneManager.sceneLoaded += SceneLoaded;
+    }
+
+    private void SceneLoaded(Scene scene, LoadSceneMode mode)
+    {
         GameStateManager.Instance.ChangeGameState(GameState.StateType.GAMEPLAY);
+        SceneManager.sceneLoaded -= SceneLoaded;
     }
 }
