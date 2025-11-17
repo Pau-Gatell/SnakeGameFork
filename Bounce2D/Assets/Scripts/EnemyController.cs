@@ -1,50 +1,44 @@
-using UnityEngine;
+﻿using UnityEngine;
+using DG.Tweening;
 
 public class EnemyController : MonoBehaviour
 {
-    public Transform waypoint1;
-    public Transform waypoint2;
+    [Header("Waypoints")]
+    public Transform Waypoint1;
+    public Transform Waypoint2;
 
-    public float tiempo = 5f;
-    private Transform _currentWaypoint;
-    private float _speedProp;
+    [Header("Configuració de moviment")]
+    public float duration = 2f;
+    public Ease easeType = Ease.InOutSine;
+    public float startDelay = 0f; //Delay abans de començar
+    public bool startOnAwake = true; 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Tweener moveTween;
+
+    private void Start()
     {
-        _currentWaypoint = waypoint1;
-
-        float dist = Vector3.Distance(waypoint1.position, waypoint2.position);
-        _speedProp = dist / tiempo;
-
-        // Velocidad = distance / tiempo
-
-        Debug.Log(_speedProp, this.gameObject);
+        if (startOnAwake)
+            StartMovement();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartMovement()
     {
-        Vector3 dir = (_currentWaypoint.position - transform.position);
-        float dist = dir.magnitude;
+        transform.position = Waypoint1.position;
 
-        if(dist < 0.01f)
-        {
-            _currentWaypoint = _currentWaypoint == waypoint1 ? waypoint2 : waypoint1;
-        }
-
-        transform.position = Vector2.MoveTowards(transform.position, _currentWaypoint.position, _speedProp * Time.deltaTime);
+        moveTween = transform.DOMove(Waypoint2.position, duration)
+            .SetEase(easeType)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetDelay(startDelay); //Delay
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void StopMovement()
     {
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("El player ha muerto");
-            Time.timeScale = 0f;
+        if (moveTween != null && moveTween.IsActive())
+            moveTween.Kill();
+    }
 
-            PlayerController ctr = collision.gameObject.GetComponent<PlayerController>();
-            ctr.Kill();
-        }
+    private void OnDestroy()
+    {
+        StopMovement();
     }
 }

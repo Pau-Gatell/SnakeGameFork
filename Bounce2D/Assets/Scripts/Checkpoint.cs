@@ -1,33 +1,39 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
     public static Checkpoint current;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public static int totalCheckpoints;
+    public static int checkpointsActivats;
+
+    private bool activat = false;
+
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (totalCheckpoints == 0)
+        {
+            totalCheckpoints = FindObjectsByType<Checkpoint>(FindObjectsSortMode.None).Length;
+            checkpointsActivats = 0;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !activat)
         {
-            current = this;
+            activat = true;
+            current = this; //Checkpoint on es reapareix
+            checkpointsActivats++;
+
             gameObject.SetActive(false);
 
-            PlayerController ctr = collision.gameObject.GetComponent<PlayerController>();
-            ctr.SetCheckpoint(this);
-
-            // I wanna save player data
-            //PlayerPrefs, is in charge of saving data (serializing)
+            Debug.Log($"Checkpoint activat! ({checkpointsActivats}/{totalCheckpoints})");
         }
+    }
+
+    public static bool TotsActivats()
+    {
+        return checkpointsActivats >= totalCheckpoints;
     }
 }

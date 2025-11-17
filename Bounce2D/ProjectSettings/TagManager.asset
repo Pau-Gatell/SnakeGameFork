@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Water
+  - Enemy
+  - CollectableBig
+  - CollectableSmall
+  - Checkpoint
+  - SpeedUp
   layers:
   - Default
   - TransparentFX
