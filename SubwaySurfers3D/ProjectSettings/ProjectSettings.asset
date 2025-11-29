@@ -4,7 +4,11 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
+<<<<<<< HEAD
   productGUID: 446ac09a92c55d24fa72c69bbb225af6
+=======
+  productGUID: 4282b873abbd7ea42af42630dd505dce
+>>>>>>> a6fcf64b8073632e3a308cb712344d0575d229bd
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -86,7 +90,10 @@ PlayerSettings:
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
   Force IOS Speakers When Recording: 0
+<<<<<<< HEAD
   audioSpatialExperience: 0
+=======
+>>>>>>> a6fcf64b8073632e3a308cb712344d0575d229bd
   deferSystemGesturesMode: 0
   hideHomeButton: 0
   submitAnalytics: 1
@@ -919,6 +926,7 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 6
   captureStartupLogs: {}
+<<<<<<< HEAD
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
   cloudProjectId: aee80222-b4a9-4b0c-be4b-3e3b6de7ead7
@@ -926,6 +934,15 @@ PlayerSettings:
   qualitySettingsNames: []
   projectName: SubwaySurfers3D
   organizationId: unity_7abab6ffc74cf98ec2ba
+=======
+  activeInputHandler: 2
+  windowsGamepadBackendHint: 0
+  cloudProjectId: 9fd86750-5bfb-4489-8cb6-be96f4c36af8
+  framebufferDepthMemorylessMode: 0
+  qualitySettingsNames: []
+  projectName: SubwaySurfers3D
+  organizationId: darkrad
+>>>>>>> a6fcf64b8073632e3a308cb712344d0575d229bd
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
