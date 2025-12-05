@@ -5,56 +5,62 @@ public class AmmoController : MonoBehaviour
 {
     public static AmmoController instance;
 
+    [Header("Prefab dels ocells")]
+    public BirdController birdPrefab;
+
+    [Header("Nombre d'ocells")]
     public int maxAmmoCount = 4;
-    public float offset = 0.05f;
-    public Transform birdPrefab;
 
-    public List<BirdController> _birds;
+    [Header("Fila al terra")]
+    public float queueOffset = 0.7f;     // Separació entre ocells
+    public Transform queueStartPoint;    // Punt al terra on comença la fila
 
-    private int _ammoCount;
+    private List<BirdController> birdQueue = new List<BirdController>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
-        instance = this;    
-        _ammoCount = maxAmmoCount;
-
-        float size = birdPrefab.GetComponent<CircleCollider2D>().radius * 2f + offset;
-
-        for (int i = 0; i < maxAmmoCount - 1; i++)
+        // Crear tots els ocells a la fila del terra
+        for (int i = 0; i < maxAmmoCount; i++)
         {
-            Vector3 pos = transform.position + Vector3.left * i * size;
-            Transform bird = Instantiate(birdPrefab, pos, Quaternion.identity);
-            bird.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+            BirdController newBird = Instantiate(birdPrefab);
 
-            BirdController bCtr = bird.GetComponent<BirdController>();
-            _birds.Add(bCtr);
+            // Posar a la cua del terra
+            Vector3 queuePos = queueStartPoint.position + Vector3.right * (i * queueOffset);
+            newBird.transform.position = queuePos;
 
+            // Convertim el Rigidbody a Kinematic per evitar col·lisions
+            newBird.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+
+            birdQueue.Add(newBird);
         }
-        
-        _birds.Reverse();
     }
 
-    // Update is called once per frame
-    void Update()
+    // Agafa el primer ocell de la cua i el treu de la llista
+    public BirdController GetNextBird()
     {
-        
+        if (birdQueue.Count == 0)
+        {
+            return null; // Game Over
+        }
+
+        BirdController nextBird = birdQueue[0];
+        birdQueue.RemoveAt(0);
+
+        return nextBird;
     }
 
-    public BirdController Reload()
+    // Reorganitza la cua al terra
+    public void UpdateQueuePositions()
     {
-        _ammoCount = _ammoCount - 1;
-
-        if (_ammoCount > 0)
+        for (int i = 0; i < birdQueue.Count; i++)
         {
-            return _birds[_ammoCount - 1];
+            Vector3 newPos = queueStartPoint.position + Vector3.right * (i * queueOffset);
+            birdQueue[i].transform.position = newPos;
         }
-        else
-        {
-            GameStateManager.Instance.ChangeGameState(GameState.StateType.OVER);
-        }
-
-        // We should evaluate if we won.
-        return null;
     }
 }

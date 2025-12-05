@@ -107,24 +107,33 @@ public class SlingshotController : MonoBehaviour
 
         Invoke(nameof(ActivateBird), 0.1f);
     }
-    public void Reload()
+public void Reload()
+{
+    // Agafem el següent ocell del AmmoController
+    _currentBird = AmmoController.instance.GetNextBird();
+
+    if (_currentBird != null)
     {
-        // We have to reload the new bird from the ammocontroller
-        _currentBird = AmmoController.instance.Reload();
+        // Posem el nou ocell a la slingshot
+        _currentBird.transform.position = _startPosition.position;
 
-        if (_currentBird != null)
-        {
-            _currentTarget = _currentBird.transform;
-            _currentBird.transform.position = _startPosition.position;
+        Rigidbody2D rb = _currentBird.GetComponent<Rigidbody2D>();
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.linearVelocity = Vector2.zero;
 
-            // We need to move the camera to its original position
-            CameraController.instance.ResetCamera();
-        }
-        else
-        {
-            // The game is over.
-        }
+        _currentTarget = _currentBird.transform;
+
+        // Actualitzem la cua del terra
+        AmmoController.instance.UpdateQueuePositions();
+
+        // Resetejar càmera si cal
+        CameraController.instance.ResetCamera();
     }
+    else
+    {
+        GameStateManager.Instance.ChangeGameState(GameState.StateType.OVER);
+    }
+}
 
     public void ActivateBird()
     {
