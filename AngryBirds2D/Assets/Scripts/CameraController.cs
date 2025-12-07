@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public static CameraController instance;
-    public Transform pivot;
+    public Transform pivot; //Posició on ha de tornar la càmara després de llençar un bird
     public float HorizontalOffset = 2f;
     private Camera _camera;
 
@@ -17,18 +17,17 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Transform target = SlingshotController.instance.GetCurrentTarget();
+        Transform target = SlingshotController.instance.GetCurrentTarget(); //Ocell actual
 
         if (target.position.x > _camera.transform.position.x)
         {
-            //Debug.Log("La posicion horizontal del pajaro es mayor que la de la camara");
             _camera.transform.position = new Vector3(target.position.x, _camera.transform.position.y, _camera.transform.position.z);
         }
     }
 
     public void ResetCamera()
     {
-        // Bring the camera to its original position
+        //Torna a la posició inicial del pivot
         transform.position = pivot.transform.position;
     }
 }

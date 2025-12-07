@@ -4,12 +4,12 @@ using UnityEngine;
 public class BombBirdController : BirdController
 {
     [Header("Bomb Settings")]
-    public float explosionDelay = 1.2f;
-    public float explosionRadius = 3f;
-    public float explosionForce = 600f;
+    public float explosionDelay = 1.2f; //Delay abans d’explotar
+    public float explosionRadius = 3f; //Radi de l'explosió
+    public float explosionForce = 600f; 
 
-    public GameObject explosionEffect;
-    public AudioClip explosionSound;
+    public GameObject explosionEffect; //Efecte de l'explosió
+    public AudioClip explosionSound; //Audio de l'explosió
 
     private bool hasExploded = false;
     private bool hasStartedCountdown = false;
@@ -40,7 +40,7 @@ public class BombBirdController : BirdController
         Explode();
     }
 
-    private void OnMouseDown()
+    private void OnMouseDown() //Si fas click al ratolí explota el bird
     {
         if (isActive && !hasExploded)
         {
@@ -53,11 +53,11 @@ public class BombBirdController : BirdController
         if (hasExploded) return;
         hasExploded = true;
 
-        // Partícules
+        //Partícules
         if (explosionEffect != null)
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
 
-        // So
+        //So
         if (explosionSound)
             AudioSource.PlayClipAtPoint(explosionSound, Camera.main.transform.position);
 
@@ -77,17 +77,17 @@ public class BombBirdController : BirdController
             HealthController health = hit.GetComponent<HealthController>();
             if (health != null)
             {
-                health.UpdateHealth(50f); // Dany configurable
+                health.UpdateHealth(50f); //Mal
             }
         }
 
-        Destroy(gameObject);
-        ReloadNext();   // Notifica al slingshot perquè carregui el següent ocell
+        Destroy(gameObject); //Destrueix el bird
+        ReloadNext();   //Es carrega el seguent ocell per posar-se a la slingshot
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.red; //Dibuixa el radi de l'explosió del bird
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 }

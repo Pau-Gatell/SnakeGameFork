@@ -8,10 +8,6 @@ public class EnemyController : MonoBehaviour
     {
         health = GetComponent<HealthController>();
 
-        if (health == null)
-        {
-            Debug.LogError("⚠ EnemyController needs a HealthController attached!");
-        }
     }
 
     public void TakeDamage(float dmg)

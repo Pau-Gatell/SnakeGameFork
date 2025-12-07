@@ -11,7 +11,7 @@ public class BirdWhiteController : BirdController
 
     private void Start()
     {
-        Initialize(); // Correcte: ve de BirdController
+        Initialize();
     }
 
     private void Update()
@@ -21,7 +21,7 @@ public class BirdWhiteController : BirdController
         DrawTrace();
         DetectAlive();
 
-        // Habilitat especial – disparar ou
+     
         if (!usedAbility && Input.GetKeyDown(KeyCode.Space))
         {
             DropEgg();
@@ -34,11 +34,11 @@ public class BirdWhiteController : BirdController
         Vector3 pos = transform.position + eggOffset;
         Transform egg = Instantiate(eggPrefab, pos, Quaternion.identity);
 
-        // Esperem 0.5s perquè no col·lisioni amb l’ocell
+        //Espera 0.5s perquè no col·lisioni amb l’ocell
         CircleCollider2D col = egg.GetComponent<CircleCollider2D>();
         StartCoroutine(EnableCollider(col));
 
-        // La càmera passa a seguir l’ou
+        //La càmera passa a seguir l’ou
         SlingshotController.instance.SetCurrentTarget(egg);
     }
 

@@ -12,7 +12,7 @@ public class BirdController : MonoBehaviour
     private Vector3 _timePosition;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected void Initialize()
+    public void Initialize()
     {
         Rbody = GetComponent<Rigidbody2D>();
         _timePosition = transform.position;

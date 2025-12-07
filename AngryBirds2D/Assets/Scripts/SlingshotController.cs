@@ -30,8 +30,8 @@ public class SlingshotController : MonoBehaviour
         _camera = Camera.main;
         _startOrigin = _startPosition.position;
 
-        // 🔥 Carreguem el primer ocell
-        _currentBird = AmmoController.instance.Reload();
+        
+        _currentBird = AmmoController.instance.Reload(); //Primer bird
 
         if (_currentBird == null)
         {
@@ -39,9 +39,9 @@ public class SlingshotController : MonoBehaviour
             return;
         }
 
-        _currentTarget = _currentBird.transform;
+        _currentTarget = _currentBird.transform; //La càmara segueix al bird
 
-        // Posem l’ocell a la galleda inicial
+        
         _currentBird.transform.position = _startPosition.position;
         _currentBird.Rbody.bodyType = RigidbodyType2D.Kinematic;
         _currentBird.Rbody.linearVelocity = Vector2.zero;
@@ -55,14 +55,14 @@ public class SlingshotController : MonoBehaviour
     {
         if (!isActive) return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) //Detecta el click
         {
             _isDragging = false;
 
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics2D.Raycast(ray.origin, ray.direction))
             {
-                _isDragging = true;
+                _isDragging = true; //Arrosegar
             }
         }
         else if (Input.GetMouseButtonUp(0))
@@ -70,7 +70,7 @@ public class SlingshotController : MonoBehaviour
             if (_isDragging)
             {
                 _isDragging = false;
-                Shot();
+                Shot(); //Dispara al bird
             }
         }
 
@@ -99,7 +99,7 @@ public class SlingshotController : MonoBehaviour
             _lineFront.SetPosition(0, mappedLine);
             _lineBack.SetPosition(0, mappedLine);
 
-            // Movem l’ocell
+           
             _currentBird.transform.position = position;
         }
         else
@@ -132,11 +132,11 @@ public class SlingshotController : MonoBehaviour
 
     public void Reload()
     {
-        _currentBird = AmmoController.instance.Reload();
+        _currentBird = AmmoController.instance.Reload(); //Nou bird
 
         if (_currentBird != null)
         {
-            _currentTarget = _currentBird.transform;
+            _currentTarget = _currentBird.transform; //La càmara canvia de Target al bird nou
             _currentBird.transform.position = _startPosition.position;
 
             _currentBird.Rbody.bodyType = RigidbodyType2D.Kinematic;
@@ -146,7 +146,7 @@ public class SlingshotController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Game Over: No queden ocells.");
+            Debug.Log("Game Over"); //Game Over
         }
     }
 
