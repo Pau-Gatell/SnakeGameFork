@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SlingshotController : MonoBehaviour
 {
@@ -23,39 +23,55 @@ public class SlingshotController : MonoBehaviour
 
     private float _timelerp = 0f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _camera = Camera.main;
-        _startOrigin = new Vector2(_startPosition.position.x, _startPosition.position.y);
-        _currentTarget = _currentBird.transform;
-
         instance = this;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!isActive)
+        _camera = Camera.main;
+        _startOrigin = _startPosition.position;
+
+        // 🔥 Carreguem el primer ocell
+        _currentBird = AmmoController.instance.Reload();
+
+        if (_currentBird == null)
         {
+            Debug.LogError("No hi ha ocells disponibles!");
             return;
         }
+
+        _currentTarget = _currentBird.transform;
+
+        // Posem l’ocell a la galleda inicial
+        _currentBird.transform.position = _startPosition.position;
+        _currentBird.Rbody.bodyType = RigidbodyType2D.Kinematic;
+        _currentBird.Rbody.linearVelocity = Vector2.zero;
+
+        // Configurem les línies del tirador
+        _lineFront.SetPosition(1, _startPosition.position);
+        _lineBack.SetPosition(1, _startPosition.position);
+    }
+
+    void Update()
+    {
+        if (!isActive) return;
 
         if (Input.GetMouseButtonDown(0))
         {
             _isDragging = false;
 
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if(Physics2D.Raycast(ray.origin, ray.direction))
+            if (Physics2D.Raycast(ray.origin, ray.direction))
             {
                 _isDragging = true;
             }
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            _isDragging = false;
-
-            Shot();
+            if (_isDragging)
+            {
+                _isDragging = false;
+                Shot();
+            }
         }
 
         OnDrag();
@@ -77,20 +93,23 @@ public class SlingshotController : MonoBehaviour
 
             _distance = (position - _startOrigin).magnitude;
 
+            // Actualitzem línies
             Vector3 ropePosition = position + _direction.normalized * 0.15f;
             Vector3 mappedLine = new Vector3(ropePosition.x, ropePosition.y, 0);
             _lineFront.SetPosition(0, mappedLine);
             _lineBack.SetPosition(0, mappedLine);
 
+            // Movem l’ocell
             _currentBird.transform.position = position;
         }
         else
         {
+            // Relaxació de les lianes
             _timelerp += Time.deltaTime;
 
             Vector3 pos1 = Vector3.MoveTowards(_lineFront.GetPosition(0), _lineFront.GetPosition(1), _timelerp);
             Vector3 pos2 = Vector3.MoveTowards(_lineBack.GetPosition(0), _lineBack.GetPosition(1), _timelerp);
-            
+
             _lineFront.SetPosition(0, pos1);
             _lineBack.SetPosition(0, pos2);
         }
@@ -98,47 +117,42 @@ public class SlingshotController : MonoBehaviour
 
     public void Shot()
     {
+        // Fem l’ocell dinàmic
         _currentBird.Rbody.bodyType = RigidbodyType2D.Dynamic;
 
         float forceImpulse = _distance / _maxDistance;
         Vector2 direction = _startPosition.position - _currentBird.transform.position;
+
         _currentBird.Rbody.AddForce(direction.normalized * _force * forceImpulse);
+
         Debug.Log(_distance + " " + _maxDistance + " -- " + forceImpulse);
 
         Invoke(nameof(ActivateBird), 0.1f);
     }
-public void Reload()
-{
-    // Agafem el següent ocell del AmmoController
-    _currentBird = AmmoController.instance.GetNextBird();
 
-    if (_currentBird != null)
+    public void Reload()
     {
-        // Posem el nou ocell a la slingshot
-        _currentBird.transform.position = _startPosition.position;
+        _currentBird = AmmoController.instance.Reload();
 
-        Rigidbody2D rb = _currentBird.GetComponent<Rigidbody2D>();
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.linearVelocity = Vector2.zero;
+        if (_currentBird != null)
+        {
+            _currentTarget = _currentBird.transform;
+            _currentBird.transform.position = _startPosition.position;
 
-        _currentTarget = _currentBird.transform;
+            _currentBird.Rbody.bodyType = RigidbodyType2D.Kinematic;
+            _currentBird.Rbody.linearVelocity = Vector2.zero;
 
-        // Actualitzem la cua del terra
-        AmmoController.instance.UpdateQueuePositions();
-
-        // Resetejar càmera si cal
-        CameraController.instance.ResetCamera();
+            CameraController.instance.ResetCamera();
+        }
+        else
+        {
+            Debug.Log("Game Over: No queden ocells.");
+        }
     }
-    else
-    {
-        GameStateManager.Instance.ChangeGameState(GameState.StateType.OVER);
-    }
-}
 
     public void ActivateBird()
     {
-        BirdController bird = _currentBird.GetComponent<BirdController>();
-        bird.SetBirdActive(true);
+        _currentBird.SetBirdActive(true);
     }
 
     public Transform GetCurrentBird()

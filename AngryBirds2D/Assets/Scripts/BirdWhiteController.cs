@@ -1,51 +1,51 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 public class BirdWhiteController : BirdController
 {
+    [Header("White Bird")]
     public Transform eggPrefab;
     public Vector3 eggOffset;
 
-    private bool _used;
+    private bool usedAbility = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        Initialize();
-
-        _used = false;
+        Initialize(); // Correcte: ve de BirdController
     }
 
     private void Update()
     {
-        if (isActive)
+        if (!isActive) return;
+
+        DrawTrace();
+        DetectAlive();
+
+        // Habilitat especial – disparar ou
+        if (!usedAbility && Input.GetKeyDown(KeyCode.Space))
         {
-            DetectAlive();
-            DrawTrace();
-
-            if(!_used && Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Log("Shooting the egg");
-                
-                Vector3 eggPosition = transform.position + eggOffset;
-                Transform egg = Instantiate(eggPrefab, eggPosition, Quaternion.identity);
-                CircleCollider2D collider = egg.GetComponent<CircleCollider2D>();
-                
-                SlingshotController.instance.StartCoroutine(ManageEggCollision(collider));
-                SlingshotController.instance.SetCurrentTarget(egg);
-
-                _used = true;
-            }
+            DropEgg();
+            usedAbility = true;
         }
     }
 
-    public IEnumerator ManageEggCollision(CircleCollider2D col)
+    private void DropEgg()
+    {
+        Vector3 pos = transform.position + eggOffset;
+        Transform egg = Instantiate(eggPrefab, pos, Quaternion.identity);
+
+        // Esperem 0.5s perquè no col·lisioni amb l’ocell
+        CircleCollider2D col = egg.GetComponent<CircleCollider2D>();
+        StartCoroutine(EnableCollider(col));
+
+        // La càmera passa a seguir l’ou
+        SlingshotController.instance.SetCurrentTarget(egg);
+    }
+
+    IEnumerator EnableCollider(CircleCollider2D col)
     {
         col.enabled = false;
-        
-        yield return new WaitForSecondsRealtime(0.5f);
-
+        yield return new WaitForSeconds(0.5f);
         col.enabled = true;
     }
 }

@@ -3,71 +3,32 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public static CameraController instance;
+    public Transform pivot;
+    public float HorizontalOffset = 2f;
+    private Camera _camera;
 
-    [Header("Configuració càmera")]
-    public float smoothSpeed = 0.125f;
-    public float minX = -20f;
-    public float maxX = 20f;
-
-    private Transform target;
-    private Vector3 initialPosition;
-
-    private void Awake()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        // Assignem la instància tan aviat com sigui possible
-        if (instance != null && instance != this)
-        {
-            Debug.LogWarning("Hi ha més d'una CameraController a l'escena. S'elimina la nova.");
-            Destroy(gameObject);
-            return;
-        }
-
         instance = this;
-        initialPosition = transform.position;
+        _camera = Camera.main;
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        // No intentis accedir a target si és null
-        if (target == null) return;
+        Transform target = SlingshotController.instance.GetCurrentTarget();
 
-        // Protecció addicional: si el Transform ha estat destruït (Unity intern), comprovar null
-        if (target.Equals(null))
+        if (target.position.x > _camera.transform.position.x)
         {
-            target = null;
-            return;
+            //Debug.Log("La posicion horizontal del pajaro es mayor que la de la camara");
+            _camera.transform.position = new Vector3(target.position.x, _camera.transform.position.y, _camera.transform.position.z);
         }
-
-        Vector3 desiredPosition = new Vector3(
-            Mathf.Clamp(target.position.x, minX, maxX),
-            transform.position.y,
-            transform.position.z
-        );
-
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-    }
-
-    public void SetTarget(Transform newTarget)
-    {
-        if (newTarget == null)
-        {
-            Debug.LogWarning("CameraController.SetTarget rebut amb null.");
-            target = null;
-            return;
-        }
-
-        target = newTarget;
-    }
-
-    public void ClearTarget()
-    {
-        // comprovació defensiva abans d'assignar null
-        target = null;
     }
 
     public void ResetCamera()
     {
-        target = null;
-        transform.position = initialPosition;
+        // Bring the camera to its original position
+        transform.position = pivot.transform.position;
     }
 }

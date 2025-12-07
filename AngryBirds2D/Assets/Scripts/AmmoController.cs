@@ -5,17 +5,14 @@ public class AmmoController : MonoBehaviour
 {
     public static AmmoController instance;
 
-    [Header("Prefab dels ocells")]
-    public BirdController birdPrefab;
+    [Header("Prefabs dels ocells")]
+    public Transform[] birdPrefabs;   // Llista de diferents ocells (Red, Bomb, etc.)
 
-    [Header("Nombre d'ocells")]
-    public int maxAmmoCount = 4;
+    [Header("Config")]
+    public int maxAmmoCount = 3;      // Nombre total d’ocells a generar
+    public float offset = 0.2f;       // Separació entre ocells a la cua
 
-    [Header("Fila al terra")]
-    public float queueOffset = 0.7f;     // Separaci� entre ocells
-    public Transform queueStartPoint;    // Punt al terra on comen�a la fila
-
-    private List<BirdController> birdQueue = new List<BirdController>();
+    private List<BirdController> _birds = new List<BirdController>();
 
     private void Awake()
     {
@@ -24,43 +21,48 @@ public class AmmoController : MonoBehaviour
 
     void Start()
     {
-        // Crear tots els ocells a la fila del terra
+        if (birdPrefabs.Length == 0)
+        {
+            Debug.LogError("No hi ha ocells assignats a 'birdPrefabs'!");
+            return;
+        }
+
+        // Agafem el collider del primer prefab per calcular la mida
+        float size = birdPrefabs[0].GetComponent<CircleCollider2D>().radius * 2f + offset;
+
+        // Generem els ocells en fila
         for (int i = 0; i < maxAmmoCount; i++)
         {
-            BirdController newBird = Instantiate(birdPrefab);
+            // Determina quin ocell es crearà (ex: 0,1,0,1…)
+            int index = i % birdPrefabs.Length;
 
-            // Posar a la cua del terra
-            Vector3 queuePos = queueStartPoint.position + Vector3.right * (i * queueOffset);
-            newBird.transform.position = queuePos;
+            Transform birdObj = Instantiate(
+                birdPrefabs[index],
+                transform.position + Vector3.left * i * size,
+                Quaternion.identity
+            );
 
-            // Convertim el Rigidbody a Kinematic per evitar col�lisions
-            newBird.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+            // Com els Angry Birds originals: quiets fins que toca llançar-los
+            Rigidbody2D rb = birdObj.GetComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
 
-            birdQueue.Add(newBird);
+            BirdController bird = birdObj.GetComponent<BirdController>();
+            _birds.Add(bird);
         }
     }
 
-    // Agafa el primer ocell de la cua i el treu de la llista
-    public BirdController GetNextBird()
+    // Retorna el següent ocell de la cua
+    public BirdController Reload()
     {
-        if (birdQueue.Count == 0)
+        if (_birds.Count == 0)
         {
-            return null; // Game Over
+            Debug.Log("No queden més ocells!");
+            return null;
         }
 
-        BirdController nextBird = birdQueue[0];
-        birdQueue.RemoveAt(0);
+        BirdController nextBird = _birds[0];
+        _birds.RemoveAt(0);
 
         return nextBird;
-    }
-
-    // Reorganitza la cua al terra
-    public void UpdateQueuePositions()
-    {
-        for (int i = 0; i < birdQueue.Count; i++)
-        {
-            Vector3 newPos = queueStartPoint.position + Vector3.right * (i * queueOffset);
-            birdQueue[i].transform.position = newPos;
-        }
     }
 }

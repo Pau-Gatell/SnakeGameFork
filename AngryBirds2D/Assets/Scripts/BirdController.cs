@@ -1,72 +1,56 @@
+﻿using System;
 using UnityEngine;
 
 public class BirdController : MonoBehaviour
 {
-    public Rigidbody2D Rbody { get; private set; }
-    public bool isActive;
+    protected bool isActive = false;
+    public float trailDelay = 0.3f;
+    public Transform trailSprite;
 
-    private bool isDead;
-    private float minYToDie = -20f;
+    [HideInInspector] public Rigidbody2D Rbody;
 
-    public virtual void Initialize()
+    private Vector3 _timePosition;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    protected void Initialize()
     {
         Rbody = GetComponent<Rigidbody2D>();
-        Rbody.bodyType = RigidbodyType2D.Kinematic;
-        isActive = false;
-        isDead = false;
+        _timePosition = transform.position;
     }
 
-    private void Update()
+    protected void DetectAlive()
     {
-        if (!isActive || isDead)
-            return;
-
-        DetectAlive();
-        DrawTrace();
-    }
-
-    public void SetBirdActive(bool value)
-    {
-        isActive = value;
-    }
-
-    /// <summary>
-    /// Checks if the bird is still alive on screen.
-    /// </summary>
-    public void DetectAlive()
-    {
-        if (isDead)
-            return;
-
-        if (transform.position.y < minYToDie || Rbody.linearVelocity.magnitude < 0.1f)
+        if (Rbody.linearVelocity.magnitude < 0.4f)
         {
-            StartCoroutine(DestroyAfterDelay());
-            isDead = true;
+            isActive = false;
+
+            SlingshotController.instance.Reload();
         }
     }
 
-    private System.Collections.IEnumerator DestroyAfterDelay()
+    public void ReloadNext()
     {
-        yield return new WaitForSeconds(1f);
-
-        // Notify camera to stop following THIS bird
-        if (CameraController.instance != null)
-            CameraController.instance.ClearTarget();
-
-        // Tell slingshot to load next bird
         SlingshotController.instance.Reload();
+    }
 
-        Destroy(gameObject);
+    public void SetBirdActive(bool activate)
+    {
+        isActive = activate;
     }
 
     public void DrawTrace()
     {
-        // Dibuixa l�nia o part�cules, si tens implementaci�
-    }
+        if (isActive)
+        {
+            float dist = Vector2.Distance(_timePosition, transform.position);
 
-    private void OnDestroy()
-    {
-        if (CameraController.instance != null)
-            CameraController.instance.ClearTarget();
+            if (dist > 0.4)
+            {
+                Transform trail = Instantiate(trailSprite, transform.position, Quaternion.identity);
+                trail.localScale = UnityEngine.Random.Range(0.5f, 1.2f) * Vector3.one;
+
+                _timePosition = transform.position;
+            }
+        }
     }
 }
