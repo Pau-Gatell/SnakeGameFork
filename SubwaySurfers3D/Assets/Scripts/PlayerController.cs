@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_isAlive)
             {
-                SceneManager.LoadScene("UIMainMenu");
+                SceneManager.LoadScene("UIGameOverMenu");
                 _isAlive = false;
             }
         }
@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_isAlive)
             {
-                SceneManager.LoadScene("UIMainMenu");
+                SceneManager.LoadScene("UIGameOverMenu");
                 _isAlive = false;
             }
         }
