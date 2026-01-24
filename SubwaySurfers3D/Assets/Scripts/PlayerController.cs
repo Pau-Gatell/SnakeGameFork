@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -147,7 +148,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_isAlive)
             {
-                GameStateManager.Instance.ChangeGameState(GameState.StateType.OVER);
+                SceneManager.LoadScene("UIMainMenu");
                 _isAlive = false;
             }
         }
@@ -156,7 +157,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_isAlive)
             {
-                GameStateManager.Instance.ChangeGameState(GameState.StateType.OVER);
+                SceneManager.LoadScene("UIMainMenu");
                 _isAlive = false;
             }
         }
