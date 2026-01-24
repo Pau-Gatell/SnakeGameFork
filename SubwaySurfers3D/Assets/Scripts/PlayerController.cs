@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -33,7 +32,15 @@ public class PlayerController : MonoBehaviour
 
     private float timeIncrement = 0f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // ================= POWER UPS =================
+    [Header("PowerUps")]
+    public float speedBoostMultiplier = 1.5f;
+    private bool speedBoostActive = false;
+
+    private bool doubleCoinsActive = false;
+    public bool IsDoubleCoinsActive() => doubleCoinsActive;
+    // ============================================
+
     void Start()
     {
         _charCtr = GetComponent<CharacterController>();
@@ -47,7 +54,7 @@ public class PlayerController : MonoBehaviour
             MoveLane(-1);
         }
 
-        if(Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D))
         {
             MoveLane(1);
         }
@@ -65,19 +72,20 @@ public class PlayerController : MonoBehaviour
 
         CheckHealth();
     }
-    // Update is called once per frame
+
     private void FixedUpdate()
     {
         ComputeGravity();
 
         timeIncrement += Time.fixedDeltaTime * speedIncremental;
-        float forwardFinalSpeed = forwardSpeed + timeIncrement;
+
+        float forwardFinalSpeed = (forwardSpeed + timeIncrement) * (speedBoostActive ? speedBoostMultiplier : 1f);
 
         Vector3 forwardMove = Vector3.forward * forwardFinalSpeed * Time.fixedDeltaTime;
         Vector3 verticalMove = Vector3.up * _currentGravity;
         Vector3 horizontalMove = Vector3.MoveTowards(_charCtr.transform.position, targetPosition, laneSwapSpeed * Time.fixedDeltaTime);
         horizontalMove = new Vector3(horizontalMove.x - transform.position.x, 0, 0);
-        
+
         _charCtr.Move(forwardMove + horizontalMove + verticalMove);
     }
 
@@ -86,10 +94,10 @@ public class PlayerController : MonoBehaviour
         int newLane = currentLane + direction;
         newLane = Mathf.Clamp(newLane, 0, 2);
 
-        if(currentLane != newLane)
+        if (currentLane != newLane)
         {
             currentLane = newLane;
-            float newx = (currentLane -1) * laneDistance;
+            float newx = (currentLane - 1) * laneDistance;
             targetPosition = new Vector3(newx, transform.position.y, transform.position.z);
         }
     }
@@ -109,7 +117,6 @@ public class PlayerController : MonoBehaviour
     {
         _isSliding = true;
 
-        // Set collider and visuals to sliding
         Vector3 oldCenter = _charCtr.center;
         float oldHeight = _charCtr.height;
 
@@ -121,7 +128,6 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(slideTime);
 
-        // Reset to default values
         _charCtr.center = oldCenter;
         _charCtr.height = oldHeight;
 
@@ -132,21 +138,21 @@ public class PlayerController : MonoBehaviour
     }
 
     public void CheckHealth()
-    {   
+    {
         RaycastHit hit;
         Vector3 p1 = transform.position;
         Vector3 p2 = p1 + Vector3.up * _charCtr.height;
 
-        if(Physics.CapsuleCast(p1, p2, _charCtr.radius, transform.forward, out hit, hitDistance, collisionLayerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.CapsuleCast(p1, p2, _charCtr.radius, transform.forward, out hit, hitDistance, collisionLayerMask, QueryTriggerInteraction.Ignore))
         {
-            if(_isAlive)
+            if (_isAlive)
             {
                 GameStateManager.Instance.ChangeGameState(GameState.StateType.OVER);
                 _isAlive = false;
             }
         }
 
-        if(Physics.CheckCapsule(p1, p2, _charCtr.radius, collisionLayerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.CheckCapsule(p1, p2, _charCtr.radius, collisionLayerMask, QueryTriggerInteraction.Ignore))
         {
             if (_isAlive)
             {
@@ -155,4 +161,33 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    // ================= POWER UPS =================
+
+    public void ActivateSpeedBoost(float duration)
+    {
+        if (!speedBoostActive)
+            StartCoroutine(SpeedBoostCoroutine(duration));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float duration)
+    {
+        speedBoostActive = true;
+        yield return new WaitForSeconds(duration);
+        speedBoostActive = false;
+    }
+
+    public void ActivateDoubleCoins(float duration)
+    {
+        StartCoroutine(DoubleCoinsCoroutine(duration));
+    }
+
+    private IEnumerator DoubleCoinsCoroutine(float duration)
+    {
+        doubleCoinsActive = true;
+        yield return new WaitForSeconds(duration);
+        doubleCoinsActive = false;
+    }
+
+    // ============================================
 }
