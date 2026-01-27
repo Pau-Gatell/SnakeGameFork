@@ -12,11 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/spmap_tiling.unity
     guid: fda3e7e0ed528204ab3fc1f566629a3f
   - enabled: 1
-    path: Assets/Scenes/UIPasueMenu.unity
-    guid: ee253541e34912c498575651c4e764d9
-  - enabled: 1
     path: Assets/Scenes/UIWinMenu.unity
     guid: 51855eef131ae40439a0c5f61447c3c0
+  - enabled: 1
+    path: Assets/Scenes/UIGameOverMenu.unity
+    guid: 2154807493a657b4aa11219004eee274
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -16,5 +16,5 @@ public class UIMenus : MonoBehaviour
     {
         Application.Quit();
     }
-    
+        
 }

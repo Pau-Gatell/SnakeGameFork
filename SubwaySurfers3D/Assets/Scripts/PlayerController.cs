@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     private float timeIncrement = 0f;
 
-    // ================= POWER UPS =================
+    //Power ups
     [Header("PowerUps")]
     public float speedBoostMultiplier = 1.5f;
     private bool speedBoostActive = false;
@@ -163,7 +163,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // ================= POWER UPS =================
+    //Power ups
 
     public void ActivateSpeedBoost(float duration)
     {
@@ -190,5 +190,5 @@ public class PlayerController : MonoBehaviour
         doubleCoinsActive = false;
     }
 
-    // ============================================
+    //
 }
