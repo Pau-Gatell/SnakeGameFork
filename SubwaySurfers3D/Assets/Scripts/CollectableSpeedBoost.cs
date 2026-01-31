@@ -1,20 +1,14 @@
 using UnityEngine;
 
-public class CollectableSpeedBoost : MonoBehaviour
+public class SpeedBoostPU : MonoBehaviour
 {
-    private BoxCollider _box;
+    public float duration = 5f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        _box = GetComponent<BoxCollider>();
-    }
-
-    public void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-
+            other.GetComponent<PlayerController>().ActivateSpeedBoost(duration);
             Destroy(gameObject);
         }
     }

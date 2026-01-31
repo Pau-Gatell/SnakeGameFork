@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class CoinManager : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class CoinManager : MonoBehaviour
     public TextMeshProUGUI coinsText;
 
     private int coins = 0;
+
+    private bool doubleCoinsActive = false;
 
     void Awake()
     {
@@ -21,6 +24,9 @@ public class CoinManager : MonoBehaviour
 
     public void AddCoins(int amount)
     {
+        if (doubleCoinsActive)
+            amount *= 2;
+
         coins += amount;
         UpdateUI();
     }
@@ -29,4 +35,18 @@ public class CoinManager : MonoBehaviour
     {
         coinsText.text = "Coins: " + coins;
     }
-}
+
+    // ================= DOUBLE COINS =================
+
+    public void ActivateDoubleCoins(float duration)
+    {
+        StartCoroutine(DoubleCoinsCoroutine(duration));
+    }
+
+    private IEnumerator DoubleCoinsCoroutine(float duration)
+    {
+        doubleCoinsActive = true;
+        yield return new WaitForSeconds(duration);
+        doubleCoinsActive = false;
+    }
+} 

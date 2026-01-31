@@ -33,14 +33,11 @@ public class PlayerController : MonoBehaviour
 
     private float timeIncrement = 0f;
 
-    //Power ups
-    [Header("PowerUps")]
+    // ================= SPEED BOOST =================
+    [Header("Speed Boost")]
     public float speedBoostMultiplier = 1.5f;
     private bool speedBoostActive = false;
-
-    private bool doubleCoinsActive = false;
-    public bool IsDoubleCoinsActive() => doubleCoinsActive;
-    // ============================================
+    // ===============================================
 
     void Start()
     {
@@ -48,17 +45,13 @@ public class PlayerController : MonoBehaviour
         targetPosition = transform.position;
     }
 
-    private void Update()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
-        {
             MoveLane(-1);
-        }
 
         if (Input.GetKeyDown(KeyCode.D))
-        {
             MoveLane(1);
-        }
 
         if (Input.GetKeyDown(KeyCode.Space) && _charCtr.isGrounded)
         {
@@ -67,43 +60,45 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.S) && !_isSliding)
-        {
             StartCoroutine(Slide());
-        }
 
         CheckHealth();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         ComputeGravity();
 
         timeIncrement += Time.fixedDeltaTime * speedIncremental;
 
-        float forwardFinalSpeed = (forwardSpeed + timeIncrement) * (speedBoostActive ? speedBoostMultiplier : 1f);
+        float finalSpeed = (forwardSpeed + timeIncrement) *
+                           (speedBoostActive ? speedBoostMultiplier : 1f);
 
-        Vector3 forwardMove = Vector3.forward * forwardFinalSpeed * Time.fixedDeltaTime;
+        Vector3 forwardMove = Vector3.forward * finalSpeed * Time.fixedDeltaTime;
         Vector3 verticalMove = Vector3.up * _currentGravity;
-        Vector3 horizontalMove = Vector3.MoveTowards(_charCtr.transform.position, targetPosition, laneSwapSpeed * Time.fixedDeltaTime);
+        Vector3 horizontalMove = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            laneSwapSpeed * Time.fixedDeltaTime
+        );
         horizontalMove = new Vector3(horizontalMove.x - transform.position.x, 0, 0);
 
         _charCtr.Move(forwardMove + horizontalMove + verticalMove);
     }
 
-    private void MoveLane(int direction)
+    void MoveLane(int direction)
     {
-        int newLane = currentLane + direction;
-        newLane = Mathf.Clamp(newLane, 0, 2);
+        int newLane = Mathf.Clamp(currentLane + direction, 0, 2);
 
-        if (currentLane != newLane)
+        if (newLane != currentLane)
         {
             currentLane = newLane;
-            float newx = (currentLane - 1) * laneDistance;
-            targetPosition = new Vector3(newx, transform.position.y, transform.position.z);
+            float newX = (currentLane - 1) * laneDistance;
+            targetPosition = new Vector3(newX, transform.position.y, transform.position.z);
         }
     }
 
-    public void ComputeGravity()
+    void ComputeGravity()
     {
         if (_charCtr.isGrounded && _currentGravity < 0)
         {
@@ -114,7 +109,7 @@ public class PlayerController : MonoBehaviour
         _currentGravity += gravity * Time.fixedDeltaTime;
     }
 
-    public IEnumerator Slide()
+    IEnumerator Slide()
     {
         _isSliding = true;
 
@@ -125,7 +120,7 @@ public class PlayerController : MonoBehaviour
         _charCtr.height = oldHeight * slideHeight;
 
         render.localScale = new Vector3(0.7f, 0.4f, 0.7f);
-        render.transform.localPosition = Vector3.up * 0.4f;
+        render.localPosition = Vector3.up * 0.4f;
 
         yield return new WaitForSeconds(slideTime);
 
@@ -133,37 +128,29 @@ public class PlayerController : MonoBehaviour
         _charCtr.height = oldHeight;
 
         render.localScale = Vector3.one;
-        render.transform.localPosition = Vector3.up;
+        render.localPosition = Vector3.up;
 
         _isSliding = false;
     }
 
-    public void CheckHealth()
+    void CheckHealth()
     {
         RaycastHit hit;
         Vector3 p1 = transform.position;
         Vector3 p2 = p1 + Vector3.up * _charCtr.height;
 
-        if (Physics.CapsuleCast(p1, p2, _charCtr.radius, transform.forward, out hit, hitDistance, collisionLayerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.CapsuleCast(p1, p2, _charCtr.radius, transform.forward,
+            out hit, hitDistance, collisionLayerMask))
         {
             if (_isAlive)
             {
-                SceneManager.LoadScene("UIGameOverMenu");
                 _isAlive = false;
-            }
-        }
-
-        if (Physics.CheckCapsule(p1, p2, _charCtr.radius, collisionLayerMask, QueryTriggerInteraction.Ignore))
-        {
-            if (_isAlive)
-            {
                 SceneManager.LoadScene("UIGameOverMenu");
-                _isAlive = false;
             }
         }
     }
 
-    //Power ups
+    // ================= SPEED BOOST =================
 
     public void ActivateSpeedBoost(float duration)
     {
@@ -171,24 +158,12 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(SpeedBoostCoroutine(duration));
     }
 
-    private IEnumerator SpeedBoostCoroutine(float duration)
+    IEnumerator SpeedBoostCoroutine(float duration)
     {
         speedBoostActive = true;
         yield return new WaitForSeconds(duration);
         speedBoostActive = false;
     }
 
-    public void ActivateDoubleCoins(float duration)
-    {
-        StartCoroutine(DoubleCoinsCoroutine(duration));
-    }
-
-    private IEnumerator DoubleCoinsCoroutine(float duration)
-    {
-        doubleCoinsActive = true;
-        yield return new WaitForSeconds(duration);
-        doubleCoinsActive = false;
-    }
-
-    //
+    // ===============================================
 }
