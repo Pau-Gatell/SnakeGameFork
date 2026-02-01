@@ -182,37 +182,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectableSpeedBoost
   duration: 5
---- !u!1 &457488255
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 457488256}
-  m_Layer: 0
-  m_Name: DoubleCoinsPU
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &457488256
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 457488255}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 383.3433, y: 0, z: 8723.983}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &731263167
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,10 +926,9 @@ SceneRoots:
   - {fileID: 1599527275}
   - {fileID: 1011235642}
   - {fileID: 3782209185292580994}
-  - {fileID: 914558747}
   - {fileID: 3934338267930942164}
   - {fileID: 2277007878261408790}
   - {fileID: 731263168}
   - {fileID: 120164682}
-  - {fileID: 457488256}
   - {fileID: 3442274617954046407}
+  - {fileID: 914558747}
