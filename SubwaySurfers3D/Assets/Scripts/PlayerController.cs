@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S) && !_isSliding)
             StartCoroutine(Slide());
 
-        CheckHealth();
+        
     }
 
     void FixedUpdate()
@@ -133,22 +133,7 @@ public class PlayerController : MonoBehaviour
         _isSliding = false;
     }
 
-    void CheckHealth()
-    {
-        RaycastHit hit;
-        Vector3 p1 = transform.position;
-        Vector3 p2 = p1 + Vector3.up * _charCtr.height;
 
-        if (Physics.CapsuleCast(p1, p2, _charCtr.radius, transform.forward,
-            out hit, hitDistance, collisionLayerMask))
-        {
-            if (_isAlive)
-            {
-                _isAlive = false;
-                SceneManager.LoadScene("UIGameOverMenu");
-            }
-        }
-    }
 
     // ================= SPEED BOOST =================
 
@@ -165,5 +150,13 @@ public class PlayerController : MonoBehaviour
         speedBoostActive = false;
     }
 
-    // ===============================================
+    // ===============================================  
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.CompareTag("Obstacle"))
+        {
+            SceneManager.LoadScene("UIGameOverMenu");
+        }
+    }
 }
