@@ -812,10 +812,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrierConcrete (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 4101335692308608796, guid: 901f3db3f1239f44e9287d732f7bb3d2, type: 3}
-      propertyPath: m_TagString
-      value: Obstacle
-      objectReference: {fileID: 0}
     - target: {fileID: 5038985957676961948, guid: 901f3db3f1239f44e9287d732f7bb3d2, type: 3}
       propertyPath: m_VersionIndex
       value: 881
@@ -1194,10 +1190,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrierRoad
       objectReference: {fileID: 0}
-    - target: {fileID: 2851049722377262858, guid: a7178c0986c3ac44a8f07100269d753a, type: 3}
-      propertyPath: m_TagString
-      value: Obstacle
-      objectReference: {fileID: 0}
     - target: {fileID: 3738059572204860985, guid: a7178c0986c3ac44a8f07100269d753a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -1462,10 +1454,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrierConcrete
       objectReference: {fileID: 0}
-    - target: {fileID: 4101335692308608796, guid: 901f3db3f1239f44e9287d732f7bb3d2, type: 3}
-      propertyPath: m_TagString
-      value: Obstacle
-      objectReference: {fileID: 0}
     - target: {fileID: 5038985957676961948, guid: 901f3db3f1239f44e9287d732f7bb3d2, type: 3}
       propertyPath: m_VersionIndex
       value: 881
@@ -1689,10 +1677,6 @@ PrefabInstance:
     - target: {fileID: 2228874656698497538, guid: 4fceb207bb703d144823548a9d4ef42c, type: 3}
       propertyPath: m_Name
       value: Train (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 2228874656698497538, guid: 4fceb207bb703d144823548a9d4ef42c, type: 3}
-      propertyPath: m_TagString
-      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 3675763119431146202, guid: 4fceb207bb703d144823548a9d4ef42c, type: 3}
       propertyPath: m_VersionIndex

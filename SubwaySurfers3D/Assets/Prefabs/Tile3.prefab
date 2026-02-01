@@ -1257,10 +1257,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Train (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 2228874656698497538, guid: 4fceb207bb703d144823548a9d4ef42c, type: 3}
-      propertyPath: m_TagString
-      value: Obstacle
-      objectReference: {fileID: 0}
     - target: {fileID: 4070423570511767117, guid: 4fceb207bb703d144823548a9d4ef42c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
